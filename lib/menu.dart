@@ -7,9 +7,21 @@ final String nama = "Davin Tristan H";
 final String kelas = "PBP A";
 
 final List<ItemHomepage> items = [
-  ItemHomepage("Lihat Proyek", Icons.folder),
-  ItemHomepage("Tambah Proyek", Icons.add_circle),
-  ItemHomepage("Logout", Icons.logout),
+  ItemHomepage(
+    "Lihat Proyek",
+    Icons.folder,
+    const Color(0xFF071A3D),
+  ),
+  ItemHomepage(
+    "Tambah Proyek",
+    Icons.add_circle,
+    const Color(0xFF123B66),
+  ),
+  ItemHomepage(
+    "Logout",
+    Icons.logout,
+    const Color(0xFF2563A6),
+  ),
 ];
 MyHomePage({super.key});
 
@@ -111,8 +123,9 @@ class InfoCard extends StatelessWidget {
 class ItemHomepage {
   final String name;
   final IconData icon;
+  final Color color;
 
-  ItemHomepage(this.name, this.icon);
+  ItemHomepage(this.name, this.icon, this.color);
 }
 
 class ItemCard extends StatelessWidget {
@@ -120,12 +133,25 @@ class ItemCard extends StatelessWidget {
 
   const ItemCard(this.item, {super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).colorScheme.secondary,
-      borderRadius: BorderRadius.circular(12),
+@override
+Widget build(BuildContext context) {
+  return Material(
+    color: Colors.transparent,
+    borderRadius: BorderRadius.circular(12),
+    child: Ink(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            item.color,
+            const Color(0xFF071A3D),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: InkWell(
+        borderRadius: BorderRadius.circular(12),
         onTap: () {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -148,17 +174,23 @@ class ItemCard extends StatelessWidget {
                   color: Colors.white,
                   size: 30.0,
                 ),
-                const Padding(padding: EdgeInsets.all(3)),
+                const Padding(
+                  padding: EdgeInsets.all(3),
+                ),
                 Text(
                   item.name,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
