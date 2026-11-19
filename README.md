@@ -70,3 +70,68 @@ samples, guidance on mobile development, and a full API reference.
 ### AI Disclosure
 
 Dalam pengerjaan Tugas 7, saya menggunakan ChatGPT sebagai alat bantu untuk memahami materi Flutter, memperoleh arahan implementasi widget, membantu mengidentifikasi dan memperbaiki error, serta menyusun draf jawaban pertanyaan reflektif. Saya tetap melakukan implementasi, menjalankan aplikasi, menguji tampilan dan interaksi, serta memeriksa kode menggunakan `flutter analyze`. Saya juga menyesuaikan tampilan kartu menggunakan gradasi warna biru dongker sesuai preferensi desain saya.
+
+### Tugas 8 
+Pada Tugas 8, aplikasi dikembangkan dengan menambahkan halaman Education Form untuk memasukkan informasi pendidikan pengguna. Form ini dibuat menggunakan StatefulWidget dan Form dengan GlobalKey<FormState> untuk mengelola serta memvalidasi input.
+
+Input yang tersedia:
+   1. Institution: Nama institusi pendidikan.
+   2. Degree / Program: Program atau jenjang pendidikan.
+   3. Start Year: Tahun mulai pendidikan.
+   4. Education Status: Status pendidikan, Currently Studying atau Graduated.
+   5. Expected Graduation / Graduation Year: Tahun perkiraan kelulusan atau tahun kelulusan.
+
+Fitur interaktif pada Education Form:
+   1. Dropdown untuk memilih status pendidikan.
+   2. Label tahun kelulusan berubah secara dinamis sesuai status yang dipilih.
+   3. Validasi untuk memastikan input wajib diisi
+   4. Validasi format tahun menggunakan empat digit
+   5. Validasi rentang tahun dari 1900 sampai 2100.
+   6. Validasi agar tahun kelulusan tidak lebih awal daripada tahun mulai pendidikan.
+
+Serta AlertDialog menampilkan seluruh data ketika form berhasil divalidasi.
+
+**Navigation Implementation**
+Aplikasi menggunakan Navigator untuk berpindah halaman. Ketika pengguna memilih Home dari Drawer pada halaman form, aplikasi menggunakan Navigator.pushReplacement() untuk kembali ke halaman Home.
+
+1. Navigator.push(): Membuka halaman baru di atas halaman sebelumnya.
+2. Navigator.pushReplacement(): Mengganti halaman saat ini dengan halaman baru.
+3. Navigator.pop(): Menutup halaman saat ini dan kembali ke halaman sebelumnya.
+4. Pada aplikasi ini, Navigator.push() digunakan ketika pengguna membuka Education Form dari action card maupun Navigation Drawer.
+5. Navigation Drawer juga tersedia pada Home Page dan halaman form, dengan pilihan Home, Add Project, dan Add Education.
+
+**Responsive Layout and Form Design**
+Education Form menggunakan SingleChildScrollView agar seluruh input dan tombol Save tetap dapat diakses ketika layar berukuran kecil atau keyboard sedang terbuka. Nah lalu Widget Column digunakan untuk menyusun seluruh input secara vertikal, sedangkan Padding digunakan untuk memberikan jarak antar-elemen. Selanjutnya untuk desain aplikasi mempertahankan identitas visual berupa warna biru dongker dan gradasi biru agar konsisten dengan halaman Home dan action cards.
+
+**Reflection Questions**
+
+1. **Apa perbedaan Navigator.push(), Navigator.pushReplacement(), dan Navigator.pop()? Kapan masing-masing digunakan dalam aplikasi?**
+
+   1. Navigator.push() menambahkan halaman baru ke navigation stack tanpa menghapus halaman sebelumnya. Pada aplikasi ini, metode tersebut digunakan untuk membuka Education Form dari Home Page atau Drawer.
+
+   2. Navigator.pushReplacement() mengganti halaman yang sedang aktif dengan halaman baru sehingga halaman sebelumnya tidak lagi menjadi halaman aktif dalam stack. Pada aplikasi ini, metode tersebut digunakan ketika pengguna memilih Home dari Navigation Drawer.
+
+   3. Navigator.pop() menutup halaman paling atas pada navigation stack dan kembali ke halaman sebelumnya. Pada aplikasi ini, metode tersebut digunakan untuk menutup AlertDialog setelah pengguna menekan tombol OK.
+
+2. **Bagaimana struktur Scaffold, AppBar, dan Drawer diterapkan agar konsisten pada setiap halaman? Bagaimana warna tema membantu menjaga konsistensi desain?**
+
+Scaffold digunakan sebagai struktur dasar setiap halaman. Di dalamnya terdapat AppBar untuk menampilkan judul halaman dan Drawer untuk menyediakan navigasi antarhalaman. Navigation Drawer dibuat dalam file terpisah, yaitu left_drawer.dart, sehingga dapat digunakan kembali pada Home Page, Project Form, dan Education Form. Penggunaan warna biru navy dan gradasi biru dongker membantu menjaga konsistensi tampilan aplikasi, terutama pada AppBar, Drawer, dan action cards.
+
+3. **Bagaimana kamu memilih layout form dan mengatur spacing agar tetap nyaman digunakan pada layar kecil?**
+
+Form menggunakan SingleChildScrollView yang membungkus Column. Dengan demikian, seluruh input dapat disusun secara vertikal dan halaman dapat digulir ketika konten melebihi tinggi layar. Setiap input diberikan Padding agar memiliki jarak yang cukup dan tidak terlihat terlalu rapat. Tombol Save juga ditempatkan setelah seluruh input sehingga pengguna dapat mengaksesnya dengan menggulir halaman.
+
+4. **Apa fungsi GlobalKey<FormState>, validator, dan validate()? Berikan contoh input yang ditolak dan jelaskan alasannya.**
+
+GlobalKey<FormState> digunakan untuk mengidentifikasi dan mengakses state dari widget Form. Melalui key tersebut, aplikasi dapat menjalankan validasi seluruh input. Nah validator merupakan fungsi yang memerisa nilai input dan mengembalikan pesan error apabila data tidak memenuhi ketentuan. Jika input valid, validator mengembalikan null. Untuk metode validate() digunakan untuk menjalankan seluruh validator dalam form. Jika terdapat input yang tidak valid, fungsi tersebut mengembalikan false dan pesan error ditampilkan pada field terkait.
+
+Contoh input yang ditolak:
+
+   1. Institution kosong atau hanya berisi spasi karena merupakan field wajib.
+   2. Start Year berisi 24 karena format tahun harus terdiri dari empat digit.
+   3. Graduation Year lebih awal daripada Start Year karena urutan tahun pendidikan tidak valid.
+   4. Keyboard numerik saja tidak cukup untuk menjamin validitas data. Pengguna masih dapat memasukkan angka yang format atau rentangnya tidak sesuai. Oleh karena itu, validasi tetap diperlukan.
+
+**AI Disclosure**
+
+Dalam pengerjaan Tugas 8, saya menggunakan ChatGPT sebagai alat bantu pembelajaran dan pengembangan aplikasi Flutter. Saya menggunakan pendekatan bertahap dengan memberikan instruksi tugas, struktur kode yang sedang dikerjakan, serta hasil error atau output terminal. Selanjutnya, saya menerapkan perubahan secara bertahap dan memeriksa hasilnya sebelum melanjutkan ke tahap berikutnya.Untuk Verifikasi dan evaluasi saya lakukan secara mandiri Seluruh implementasi tetap diperiksa dan diuji secara langsung. Saya menjalankan aplikasi, mencoba navigasi dari action card dan Drawer, menguji validasi form dengan input yang valid maupun tidak valid, serta mencoba pilihan status pendidikan yang berbeda. AI saya gunakan sebagai alat bantu, bukan pengganti proses implementasi, pengujian, dan pemahaman terhadap kode saya. 
