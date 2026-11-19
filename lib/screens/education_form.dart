@@ -16,6 +16,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
   String _program = "";
   String _startYear = "";
   String _graduationYear = "";
+  String _status = "Currently Studying";
 
   String? _validateYear(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -27,8 +28,15 @@ class _EducationFormPageState extends State<EducationFormPage> {
     }
 
     final year = int.parse(value.trim());
+
     if (year < 1900 || year > 2100) {
       return "Masukkan tahun yang valid!";
+    }
+
+    if (_startYear.trim().isNotEmpty &&
+        RegExp(r'^\d{4}$').hasMatch(_startYear.trim()) &&
+        year < int.parse(_startYear.trim())) {
+      return "Tahun tidak boleh sebelum tahun mulai!";
     }
 
     return null;
@@ -51,7 +59,6 @@ class _EducationFormPageState extends State<EducationFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Institution
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -62,9 +69,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
-                  onChanged: (value) {
-                    _institution = value;
-                  },
+                  onChanged: (value) => _institution = value,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return "Institution tidak boleh kosong!";
@@ -74,7 +79,6 @@ class _EducationFormPageState extends State<EducationFormPage> {
                 ),
               ),
 
-              // Degree / Program
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -85,9 +89,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
-                  onChanged: (value) {
-                    _program = value;
-                  },
+                  onChanged: (value) => _program = value,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return "Program tidak boleh kosong!";
@@ -97,7 +99,6 @@ class _EducationFormPageState extends State<EducationFormPage> {
                 ),
               ),
 
-              // Start Year
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -116,13 +117,42 @@ class _EducationFormPageState extends State<EducationFormPage> {
                 ),
               ),
 
-              // Graduation Year
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButtonFormField<String>(
+                  initialValue: _status,
+                  decoration: InputDecoration(
+                    labelText: "Education Status",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: "Currently Studying",
+                      child: Text("Currently Studying"),
+                    ),
+                    DropdownMenuItem(
+                      value: "Graduated",
+                      child: Text("Graduated"),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _status = value!;
+                    });
+                  },
+                ),
+              ),
+
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: "Graduation Year",
+                    labelText: _status == "Graduated"
+                        ? "Graduation Year"
+                        : "Expected Graduation",
                     hintText: "Contoh: 2028",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -131,23 +161,10 @@ class _EducationFormPageState extends State<EducationFormPage> {
                   onChanged: (value) {
                     _graduationYear = value;
                   },
-                  validator: (value) {
-                    final yearError = _validateYear(value);
-                    if (yearError != null) {
-                      return yearError;
-                    }
-
-                    if (int.parse(value!.trim()) <
-                        int.parse(_startYear.trim())) {
-                      return "Tahun lulus tidak boleh sebelum tahun mulai!";
-                    }
-
-                    return null;
-                  },
+                  validator: _validateYear,
                 ),
               ),
 
-              // Save Button
               Align(
                 alignment: Alignment.center,
                 child: Padding(
@@ -166,15 +183,20 @@ class _EducationFormPageState extends State<EducationFormPage> {
                               title: const Text(
                                 'Education successfully added!',
                               ),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Institution: $_institution'),
-                                  Text('Program: $_program'),
-                                  Text('Start Year: $_startYear'),
-                                  Text('Graduation Year: $_graduationYear'),
-                                ],
+                              content: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Institution: $_institution'),
+                                    Text('Program: $_program'),
+                                    Text('Start Year: $_startYear'),
+                                    Text('Status: $_status'),
+                                    Text(
+                                      '${_status == "Graduated" ? "Graduation Year" : "Expected Graduation"}: $_graduationYear',
+                                    ),
+                                  ],
+                                ),
                               ),
                               actions: [
                                 TextButton(
