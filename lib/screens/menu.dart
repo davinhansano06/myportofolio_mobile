@@ -20,6 +20,11 @@ final List<ItemHomepage> items = [
     const Color(0xFF123B66),
   ),
   ItemHomepage(
+    "Tambah Education",
+    Icons.school,
+    const Color(0xFF2563A6),
+  ),
+  ItemHomepage(
     "Logout",
     Icons.logout,
     const Color(0xFF2563A6),
