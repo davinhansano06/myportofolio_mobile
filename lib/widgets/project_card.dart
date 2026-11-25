@@ -1,12 +1,15 @@
 
 import 'package:material_ui/material_ui.dart';
-import 'package:myportofolio_mobile/screens/menu.dart';
-import 'package:myportofolio_mobile/screens/project_form.dart';
-import 'package:myportofolio_mobile/screens/education_form.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth_provider.dart';
+import '../screens/menu.dart';
+import '../screens/project_form.dart';
+import '../screens/education_form.dart';
+import '../screens/login_screen.dart';
 
 class ItemCard extends StatelessWidget {
   final ItemHomepage item;
-
   const ItemCard(this.item, {super.key});
 
   @override
@@ -17,78 +20,66 @@ class ItemCard extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              item.color,
-              const Color(0xFF071A3D),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [item.color, const Color(0xFF071A3D)],
           ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Kamu telah menekan tombol ${item.name}!",
-                  ),
-                ),
-              );
-
-            if (item.name == "Tambah Proyek") {
-              Navigator.push(
+          onTap: () async {
+            if (item.name == 'Logout') {
+              await context.read<AuthProvider>().logout();
+              if (!context.mounted) return;
+              Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ProjectFormPage(),
-                ),
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
               );
-            }
-            if (item.name == "Tambah Proyek") {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ProjectFormPage(),
-                ),
-              );
+              return;
             }
 
-            if (item.name == "Tambah Education") {
+            if (item.name == 'Tambah Proyek' ||
+                item.name == 'Tambah Education') {
+              if (!context.read<AuthProvider>().isAuthenticated) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                );
+                return;
+              }
+            }
+
+            if (item.name == 'Tambah Proyek') {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const EducationFormPage(),
-                ),
+                MaterialPageRoute(builder: (_) => const ProjectFormPage()),
+              );
+            } else if (item.name == 'Tambah Education') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const EducationFormPage()),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Kamu menekan ${item.name}')),
               );
             }
           },
-          child: Container(
+          child: Padding(
             padding: const EdgeInsets.all(8),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    item.icon,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(item.icon, color: Colors.white, size: 30),
+                const SizedBox(height: 6),
+                Text(
+                  item.name,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
                     color: Colors.white,
-                    size: 30.0,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(3),
-                  ),
-                  Text(
-                    item.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
