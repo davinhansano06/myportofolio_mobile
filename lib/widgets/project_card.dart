@@ -1,7 +1,8 @@
 
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-
+import '../screens/education_list_screen.dart';
+import '../screens/experience_list_screen.dart';
 import '../providers/auth_provider.dart';
 import '../screens/menu.dart';
 import '../screens/project_form.dart';
@@ -33,6 +34,25 @@ class ItemCard extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (_) => const LoginScreen()),
+              );
+              return;
+            }
+            if (item.name == 'Lihat Proyek') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ExperienceListScreen(),
+                ),
+              );
+              return;
+            }
+
+            if (item.name == 'Lihat Education') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const EducationListScreen(),
+                ),
               );
               return;
             }

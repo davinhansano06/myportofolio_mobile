@@ -10,6 +10,11 @@ final String kelas = "PBP A";
 
 final List<ItemHomepage> items = [
   ItemHomepage(
+    "Lihat Education",
+    Icons.school_outlined,
+    const Color(0xFF123B66),
+  ),
+  ItemHomepage(
     "Lihat Proyek",
     Icons.folder,
     const Color(0xFF071A3D),
