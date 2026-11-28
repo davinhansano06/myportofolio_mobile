@@ -1,4 +1,3 @@
-
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -15,10 +14,21 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+
   bool loading = false;
   String? error;
 
   Future<void> handleLogin() async {
+    final username = usernameController.text.trim();
+    final password = passwordController.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      setState(() {
+        error = 'Username dan password wajib diisi.';
+      });
+      return;
+    }
+
     setState(() {
       loading = true;
       error = null;
@@ -26,27 +36,39 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final success = await context.read<AuthProvider>().login(
-        usernameController.text.trim(),
-        passwordController.text,
+        username,
+        password,
       );
 
       if (!mounted) return;
 
       if (success) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => MyHomePage()),
-        );
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context, true);
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const MyHomePage()),
+          );
+        }
       } else {
-        setState(() => error = 'Username atau password salah.');
+        setState(() {
+          error = 'Username atau password salah.';
+        });
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        setState(() => error = 'Gagal terhubung ke server.');
+        setState(() {
+          error = 'Gagal terhubung ke server: $e';
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
       }
     }
-
-    if (mounted) setState(() => loading = false);
   }
 
   @override
@@ -74,8 +96,10 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Password'),
             ),
-            if (error != null)
+            if (error != null) ...[
+              const SizedBox(height: 12),
               Text(error!, style: const TextStyle(color: Colors.red)),
+            ],
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: loading ? null : handleLogin,

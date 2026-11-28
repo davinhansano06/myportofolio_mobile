@@ -16,18 +16,26 @@ class Experience {
   final bool isStarred;
 
   Experience({
-    required this.id,
+    this.id = '',
     required this.title,
-    required this.institution,
-    required this.period,
+    this.institution = '',
+    this.period = '',
     required this.description,
-    required this.image,
-    required this.starCount,
-    required this.isStarred,
+    this.image = '',
+    this.starCount = 0,
+    this.isStarred = false,
   });
 
   factory Experience.fromJson(Map<String, dynamic> json) =>
       _$ExperienceFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExperienceToJson(this);
+
+  Map<String, dynamic> toCreateJson() => {
+    'title': title,
+    'institution': institution,
+    'period': period,
+    'description': description,
+    'image': image,
+  };
 }

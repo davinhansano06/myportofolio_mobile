@@ -21,21 +21,31 @@ class Education {
   final String starredByNames;
 
   Education({
-    required this.id,
+    this.id = '',
     required this.institution,
     required this.degree,
     required this.period,
     required this.location,
     required this.skills,
-    required this.isCurrent,
+    this.isCurrent = false,
     required this.logo,
-    required this.starCount,
-    required this.isStarred,
-    required this.starredByNames,
+    this.starCount = 0,
+    this.isStarred = false,
+    this.starredByNames = '',
   });
 
   factory Education.fromJson(Map<String, dynamic> json) =>
       _$EducationFromJson(json);
 
   Map<String, dynamic> toJson() => _$EducationToJson(this);
+
+  Map<String, dynamic> toCreateJson() => {
+    'institution': institution,
+    'degree': degree,
+    'period': period,
+    'location': location,
+    'skills': skills,
+    'is_current': isCurrent,
+    'logo': logo,
+  };
 }

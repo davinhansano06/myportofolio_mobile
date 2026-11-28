@@ -1,13 +1,14 @@
-
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/auth_provider.dart';
+import '../screens/education_form.dart';
 import '../screens/education_list_screen.dart';
 import '../screens/experience_list_screen.dart';
-import '../providers/auth_provider.dart';
+import '../screens/login_screen.dart';
 import '../screens/menu.dart';
 import '../screens/project_form.dart';
-import '../screens/education_form.dart';
-import '../screens/login_screen.dart';
+import '../utils/auth_guard.dart';
 
 class ItemCard extends StatelessWidget {
   final ItemHomepage item;
@@ -28,21 +29,27 @@ class ItemCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () async {
-            if (item.name == 'Logout') {
-              await context.read<AuthProvider>().logout();
-              if (!context.mounted) return;
-              Navigator.pushReplacement(
+            if (item.name == 'Login') {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const LoginScreen()),
               );
               return;
             }
+
+            if (item.name == 'Logout') {
+              await context.read<AuthProvider>().logout();
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Berhasil logout.')));
+              return;
+            }
+
             if (item.name == 'Lihat Proyek') {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => const ExperienceListScreen(),
-                ),
+                MaterialPageRoute(builder: (_) => const ExperienceListScreen()),
               );
               return;
             }
@@ -50,39 +57,34 @@ class ItemCard extends StatelessWidget {
             if (item.name == 'Lihat Education') {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => const EducationListScreen(),
-                ),
+                MaterialPageRoute(builder: (_) => const EducationListScreen()),
               );
               return;
             }
 
-            if (item.name == 'Tambah Proyek' ||
-                item.name == 'Tambah Education') {
-              if (!context.read<AuthProvider>().isAuthenticated) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                );
-                return;
-              }
-            }
-
             if (item.name == 'Tambah Proyek') {
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn || !context.mounted) return;
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const ProjectFormPage()),
               );
-            } else if (item.name == 'Tambah Education') {
+              return;
+            }
+
+            if (item.name == 'Tambah Education') {
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn || !context.mounted) return;
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const EducationFormPage()),
               );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Kamu menekan ${item.name}')),
-              );
+              return;
             }
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Kamu menekan ${item.name}')),
+            );
           },
           child: Padding(
             padding: const EdgeInsets.all(8),
