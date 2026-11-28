@@ -135,3 +135,35 @@ Contoh input yang ditolak:
 **AI Disclosure**
 
 Dalam pengerjaan Tugas 8, saya menggunakan ChatGPT sebagai alat bantu pembelajaran dan pengembangan aplikasi Flutter. Saya menggunakan pendekatan bertahap dengan memberikan instruksi tugas, struktur kode yang sedang dikerjakan, serta hasil error atau output terminal. Selanjutnya, saya menerapkan perubahan secara bertahap dan memeriksa hasilnya sebelum melanjutkan ke tahap berikutnya.Untuk Verifikasi dan evaluasi saya lakukan secara mandiri Seluruh implementasi tetap diperiksa dan diuji secara langsung. Saya menjalankan aplikasi, mencoba navigasi dari action card dan Drawer, menguji validasi form dengan input yang valid maupun tidak valid, serta mencoba pilihan status pendidikan yang berbeda. AI saya gunakan sebagai alat bantu, bukan pengganti proses implementasi, pengujian, dan pemahaman terhadap kode saya. 
+
+### Tugas 9
+
+1. **Mengapa menggunakan `@JsonSerializable(fieldRename: FieldRename.snake)` dan `@JsonKey(includeToJson: false)`?**
+
+   `@JsonSerializable` mempermudah konversi model Dart ke JSON dengan nama field yang sesuai dengan Django, seperti `is_current`. `includeToJson: false` pada `id` mencegah ID buatan server ikut dikirim saat POST. Pendekatan ini mengurangi risiko kesalahan penamaan field dan serialisasi.
+
+2. **Mengapa Future diinisialisasi di `initState()` dan ApiClient melempar `ApiException`?**
+
+   Future di `initState()` mencegah request dibuat ulang setiap kali `build()` dipanggil. `ApiException` membuat error HTTP dapat ditangani secara jelas, misalnya status 401 dapat digunakan untuk menghapus sesi dan meminta login kembali.
+
+3. **Apa perbedaan SessionAuthentication dan TokenAuthentication? Mengapa mobile menggunakan TokenAuthentication?**
+
+   `SessionAuthentication` menggunakan session dan cookie, cocok untuk website Django. `TokenAuthentication` menggunakan token pada header `Authorization`, sehingga sesuai untuk aplikasi Flutter mobile. SessionAuthentication tetap aktif agar website tetap dapat menggunakan autentikasi session.
+
+4. **Apa peran job `build` dan `build_apk`? Mengapa `*.g.dart` di-ignore?**
+
+   Job `build` menjalankan pemeriksaan formatting, analisis, lint, dan test. Job `build_apk` membangun APK release dan mengunggahnya sebagai artifact. File `*.g.dart` di-ignore karena merupakan hasil code generation; CI membuatnya kembali menggunakan `build_runner` sebelum analisis dan build.
+
+### Setup
+
+```bash
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:8000
+```
+
+Backend Django: **[URL repository backend]**
+
+### AI Disclosure
+
+Saya menggunakan ChatGPT untuk memahami instruksi, menganalisis error, dan menyusun dokumentasi. Antigravity membantu implementasi model dan integrasi API Education serta Experience. Saya memeriksa dan menguji hasilnya melalui `flutter analyze`, `flutter test`, build APK, dan GitHub Actions. Beberapa saran AI perlu diperiksa manual, terutama konfigurasi Gradle dan perubahan file, karena AI tidak selalu mengetahui kondisi repository terbaru.
