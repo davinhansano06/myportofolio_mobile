@@ -1,23 +1,32 @@
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'education.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Education {
+  @JsonKey(includeToJson: false, defaultValue: '')
   final String id;
+
   final String institution;
   final String degree;
   final String period;
   final String location;
   final String skills;
-  @JsonKey(name: 'is_current')
+
+  @JsonKey(defaultValue: false)
   final bool isCurrent;
+
+  @JsonKey(defaultValue: '')
   final String logo;
-  @JsonKey(name: 'star_count')
+
+  @JsonKey(defaultValue: 0)
   final int starCount;
-  @JsonKey(name: 'is_starred')
+
+  @JsonKey(defaultValue: false)
   final bool isStarred;
-  @JsonKey(name: 'starred_by_names')
+
+  @JsonKey(defaultValue: '')
   final String starredByNames;
 
   Education({
@@ -28,7 +37,7 @@ class Education {
     required this.location,
     required this.skills,
     this.isCurrent = false,
-    required this.logo,
+    this.logo = '',
     this.starCount = 0,
     this.isStarred = false,
     this.starredByNames = '',
